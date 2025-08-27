@@ -1,9 +1,9 @@
 ﻿using Systems.Detection2D.Components.Detectors.Abstract;
 using Systems.Detection2D.Components.Objects.Abstract;
-using Systems.Interact2D.Components.Abstract;
+using Systems.SimpleInteract.Components.Abstract;
 using UnityEngine;
 
-namespace Systems.Interact2D.Components
+namespace Systems.SimpleInteract.Components
 {
     /// <summary>
     ///     Basic interactor component.

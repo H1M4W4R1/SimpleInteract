@@ -1,9 +1,9 @@
-﻿using Systems.Interact2D.Components;
-using Systems.Interact2D.Data;
-using Systems.Interact2D.Examples.Interactors;
+﻿using Systems.SimpleInteract.Components;
+using Systems.SimpleInteract.Data;
+using Systems.SimpleInteract.Examples.Interactors;
 using UnityEngine;
 
-namespace Systems.Interact2D.Examples.Objects
+namespace Systems.SimpleInteract.Examples.Objects
 {
     /// <summary>
     ///     Handles interaction with player flag object

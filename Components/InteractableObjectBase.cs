@@ -2,10 +2,10 @@
 using JetBrains.Annotations;
 using Systems.Detection2D.Components.Detectors.Base;
 using Systems.Detection2D.Components.Objects.Abstract;
-using Systems.Interact2D.Components.Abstract;
-using Systems.Interact2D.Data;
+using Systems.SimpleInteract.Components.Abstract;
+using Systems.SimpleInteract.Data;
 
-namespace Systems.Interact2D.Components
+namespace Systems.SimpleInteract.Components
 {
     /// <summary>
     ///     Represents object that can be interacted with in 2D space

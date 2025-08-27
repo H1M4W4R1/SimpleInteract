@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Systems.Interact2D.Components.Abstract
+namespace Systems.SimpleInteract.Components.Abstract
 {
     /// <summary>
     ///     Accessor for interaction logic.

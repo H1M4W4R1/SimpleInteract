@@ -1,8 +1,8 @@
 ﻿using JetBrains.Annotations;
 using Systems.Detection2D.Components.Objects.Abstract;
-using Systems.Interact2D.Components;
+using Systems.SimpleInteract.Components;
 
-namespace Systems.Interact2D.Data
+namespace Systems.SimpleInteract.Data
 {
     /// <summary>
     ///     Represents interaction context between interactable object and interactor
