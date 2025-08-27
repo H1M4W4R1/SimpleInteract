@@ -16,7 +16,7 @@ namespace Systems.SimpleInteract.Components
     ///     by ignoring objects that are not e.g. player or other interactors.
     ///     For reference see <see cref="CanBeDetected"/> method.
     /// </remarks>
-    public abstract class InteractableObjectBase<TInteractor> : CircularDetector, IInteractable<TInteractor>
+    public abstract class InteractableObjectBase<TInteractor> : Circle2DDetector, IInteractable<TInteractor>
         where TInteractor : DetectableObjectBase
     {
         /// <summary>
