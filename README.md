@@ -7,7 +7,7 @@ Interact2D is a Unity3D system that creates 2D interaction capabilities.
 * Unity.Burst
 * Unity.Collections
 * Unity.Mathematics
-* **Detection2D Framework by H1M4W4R1**
+* [**Detection2D Framework by H1M4W4R1**](https://github.com/H1M4W4R1/Detection2D)
 
 # Usage
 
