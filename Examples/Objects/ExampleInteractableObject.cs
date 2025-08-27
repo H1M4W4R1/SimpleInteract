@@ -1,17 +1,26 @@
 ﻿using Systems.Interact2D.Components;
 using Systems.Interact2D.Data;
+using Systems.Interact2D.Examples.Interactors;
 using UnityEngine;
 
-namespace Systems.Interact2D.Examples
+namespace Systems.Interact2D.Examples.Objects
 {
     /// <summary>
     ///     Handles interaction with player flag object
     /// </summary>
     public sealed class ExampleInteractableObject : InteractableObjectBase<ExamplePlayerFlagObject>
     {
+        [ContextMenu("Test interaction")]
+        private void InteractAsFirstInteractor()
+        {
+            if (Interactors.Count == 0) return;
+            Interact(Interactors[0]);
+        }
+        
         protected override void OnInteract(InteractionContext<ExamplePlayerFlagObject> context)
         {
             Debug.Log("Interacted with player flag object");
+            Destroy(gameObject);
         }
 
         protected override void OnInteractFailed(InteractionContext<ExamplePlayerFlagObject> context)
