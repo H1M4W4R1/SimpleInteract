@@ -1,18 +1,18 @@
 <div align="center">
-  <h1>Interact2D</h1>
+  <h1>SimpleInteract</h1>
   <!--<img src="https://github.com/H1M4W4R1/Detection2D/blob/master/Images/Screenshot0000.png" alt="Preview screenshot"/>-->
 </div>
  
 # About
 
-Interact2D is a Unity3D system that creates 2D interaction capabilities.
+SimpleInteract is a Unity3D system that creates interaction capabilities.
 
 # Requirements
 
 * Unity.Burst
 * Unity.Collections
 * Unity.Mathematics
-* [**Detection2D Framework by H1M4W4R1**](https://github.com/H1M4W4R1/Detection2D)
+* [**SimpleDetection Framework by H1M4W4R1**](https://github.com/H1M4W4R1/SimpleDetection)
 
 # Usage
 
