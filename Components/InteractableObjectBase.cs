@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Systems.Detection2D.Components.Detectors.Base;
 using Systems.Detection2D.Components.Objects.Abstract;
+using Systems.Interact2D.Components.Abstract;
 using Systems.Interact2D.Data;
 
 namespace Systems.Interact2D.Components
@@ -15,7 +16,7 @@ namespace Systems.Interact2D.Components
     ///     by ignoring objects that are not e.g. player or other interactors.
     ///     For reference see <see cref="CanBeDetected"/> method.
     /// </remarks>
-    public abstract class InteractableObjectBase<TInteractor> : CircularDetector
+    public abstract class InteractableObjectBase<TInteractor> : CircularDetector, IInteractable<TInteractor>
         where TInteractor : DetectableObjectBase
     {
         /// <summary>
