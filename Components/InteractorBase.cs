@@ -1,5 +1,5 @@
-﻿using Systems.Detection2D.Components.Detectors.Abstract;
-using Systems.Detection2D.Components.Objects.Abstract;
+﻿using Systems.SimpleDetection.Components.Detectors.Abstract;
+using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Abstract;
 using UnityEngine;
 
