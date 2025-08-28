@@ -1,11 +1,11 @@
 {
-    "name": "Interact2D", 
+    "name": "SimpleInteract", 
     "rootNamespace": "",
     "references": [
         "Unity.Burst",
         "Unity.Collections",
         "Unity.Mathematics",
-        "Detection2D"
+        "SimpleDetection"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
