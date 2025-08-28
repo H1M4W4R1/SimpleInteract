@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Systems.SimpleDetection.Components.Detectors.Base;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Abstract;
+using Systems.SimpleInteract.Components.Detectors.Abstract;
 using Systems.SimpleInteract.Data;
+using UnityEngine;
 
 namespace Systems.SimpleInteract.Components
 {
@@ -16,20 +19,26 @@ namespace Systems.SimpleInteract.Components
     ///     by ignoring objects that are not e.g. player or other interactors.
     ///     For reference see <see cref="CanBeDetected"/> method.
     /// </remarks>
-    public abstract class InteractableObjectBase<TInteractor> : Circle2DDetector, IInteractable<TInteractor>
+    [RequireComponent(typeof(IInteractableDetector))]
+    public abstract class InteractableObjectBase<TInteractor> : MonoBehaviour, IInteractable<TInteractor>
         where TInteractor : DetectableObjectBase
     {
+        /// <summary>
+        ///     Detector linked to this object
+        /// </summary>
+        private IInteractableDetector _detector;
+        
         /// <summary>
         ///     Cache of all interactors that can interact with this object
         ///     at current frame
         /// </summary>
         private readonly List<TInteractor> _interactors = new();
-        
+
         /// <summary>
         ///     All interactors that are able to interact at current frame
         /// </summary>
         public IReadOnlyList<TInteractor> Interactors => _interactors;
-        
+
         /// <summary>
         ///     Check if this object can be interacted with
         /// </summary>
@@ -44,7 +53,7 @@ namespace Systems.SimpleInteract.Components
         ///     otherwise <see cref="OnInteractFailed"/> is called.
         /// </summary>
         /// <param name="interactor">Object that is attempting to interact with this object</param>
-        public void Interact([NotNull] TInteractor interactor)
+        public void Interact(TInteractor interactor)
         {
             // Create context
             InteractionContext<TInteractor> context = new(this, interactor);
@@ -88,42 +97,59 @@ namespace Systems.SimpleInteract.Components
         {
         }
 
+#region Unity Lifecycle
+
+        protected void Awake()
+        {
+           _detector = GetComponent<IInteractableDetector>();
+           _detector.ObjectCanBeDetected += CanBeDetected;
+           _detector.ObjectDetectionStart += OnObjectDetectionStart;
+           _detector.ObjectDetectionEnd += OnObjectDetectionEnd;
+           _detector.ObjectDetectionFailed += OnObjectDetectionFailed;
+           _detector.ObjectDetected += OnObjectDetected;
+           _detector.ObjectGhostDetected += OnObjectGhostDetected;
+        }
+
+        protected void OnDestroy()
+        {
+            _detector.ObjectCanBeDetected -= CanBeDetected;
+            _detector.ObjectDetectionStart -= OnObjectDetectionStart;
+            _detector.ObjectDetectionEnd -= OnObjectDetectionEnd;
+            _detector.ObjectDetectionFailed -= OnObjectDetectionFailed;
+            _detector.ObjectDetected -= OnObjectDetected;
+            _detector.ObjectGhostDetected -= OnObjectGhostDetected;
+        }
+
+#endregion
+
+#region IInteractableDetector Handlers
+
         /// <summary>
         ///     Checks if object can be detected by this interactor.
         ///     Used for performance optimization.
         /// </summary>
         /// <param name="obj">Object to check</param>
-        protected override bool CanBeDetected(DetectableObjectBase obj) => obj is TInteractor;
+        protected virtual bool CanBeDetected(DetectableObjectBase obj) => obj is TInteractor;
 
-#region BASE Implementation
-
-        protected sealed override void OnObjectDetectionStart(DetectableObjectBase obj)
+        
+        protected virtual void OnObjectDetectionStart(DetectableObjectBase obj)
         {
-            base.OnObjectDetectionStart(obj);
-            
-            if(obj is TInteractor interactor)
-                OnInteractionZoneEnter(interactor);
+            if (obj is TInteractor interactor) OnInteractionZoneEnter(interactor);
         }
 
-        protected sealed override void OnObjectDetectionEnd(DetectableObjectBase obj)
+        protected virtual void OnObjectDetectionEnd(DetectableObjectBase obj)
         {
-            base.OnObjectDetectionEnd(obj);
-            
-            if(obj is TInteractor interactor)
-                OnInteractionZoneExit(interactor);
+            if (obj is TInteractor interactor) OnInteractionZoneExit(interactor);
         }
 
-        protected sealed override void OnObjectDetectionFailed(DetectableObjectBase obj)
+        protected virtual void OnObjectDetectionFailed(DetectableObjectBase obj)
         {
-            base.OnObjectDetectionFailed(obj);
             if (obj is TInteractor detectableObjectBase)
                 _interactors.RemoveAll(o => ReferenceEquals(o, detectableObjectBase));
         }
 
-        protected sealed override void OnObjectDetected(DetectableObjectBase obj)
+        protected virtual void OnObjectDetected(DetectableObjectBase obj)
         {
-            base.OnObjectDetected(obj);
-
             // Skip if object is not of type TDetectableObjectBase
             if (obj is not TInteractor detectableObjectBase) return;
 
@@ -131,7 +157,7 @@ namespace Systems.SimpleInteract.Components
             if (!_interactors.Contains(detectableObjectBase)) _interactors.Add(detectableObjectBase);
         }
 
-        protected sealed override void OnObjectGhostDetected(DetectableObjectBase obj)
+        protected virtual void OnObjectGhostDetected(DetectableObjectBase obj)
         {
             // Safety fallback, technically ghosts should not be supported by interactable objects,
             // but we keep it just in case somebody decides otherwise and adds ghost support to object class.

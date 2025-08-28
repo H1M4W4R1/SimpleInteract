@@ -2,7 +2,7 @@
   <h1>SimpleInteract</h1>
   <!--<img src="https://github.com/H1M4W4R1/Detection2D/blob/master/Images/Screenshot0000.png" alt="Preview screenshot"/>-->
 </div>
- 
+
 # About
 
 SimpleInteract is a Unity3D system that creates interaction capabilities.
@@ -42,6 +42,9 @@ There are a few methods that will help you to handle interaction logic:
     }
 ```
 
+Beware that you also need to add any component that implements `IInteractableDetector` to your interactable object
+to provide interaction zone.
+
 ## Creating an interactable player
 
 You simply need to create a custom class that inherits from `InteractorBase`. It is heavily recommended
@@ -58,6 +61,7 @@ Of course, you can also add custom detection events to this class.
 ```
 
 ## Interacting
+
 When interact key is pressed you can interact with object by using `Interact(interactor)` method
 of specific interactable object.
 
