@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
-using Systems.SimpleDetection.Components.Detectors.Base;
+﻿using System.Collections.Generic;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Abstract;
 using Systems.SimpleInteract.Components.Detectors.Abstract;

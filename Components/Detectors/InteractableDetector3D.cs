@@ -1,5 +1,4 @@
-﻿using System;
-using Systems.SimpleDetection.Components.Detectors.Base;
+﻿using Systems.SimpleDetection.Components.Detectors.Base;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Detectors.Abstract;
 
