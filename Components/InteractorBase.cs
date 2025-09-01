@@ -1,6 +1,7 @@
 ﻿using Systems.SimpleDetection.Components.Detectors.Abstract;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Abstract;
+using Systems.SimpleInteract.Data;
 using UnityEngine;
 
 namespace Systems.SimpleInteract.Components
@@ -8,8 +9,14 @@ namespace Systems.SimpleInteract.Components
     /// <summary>
     ///     Basic interactor component.
     /// </summary>
-    public abstract class InteractorBase : DetectableObjectBase
+    public abstract class InteractorBase<TSelf> : InteractorBase
+        where TSelf : InteractorBase<TSelf>
     {
+        /// <summary>
+        ///     Checks if this interactor can interact with given interactable object.
+        /// </summary>
+        protected internal virtual bool CanInteract(InteractionContext<TSelf> context) => true;
+        
         /// <summary>
         ///     Interacts with all detected objects.
         /// </summary>
@@ -61,5 +68,10 @@ namespace Systems.SimpleInteract.Components
 
             return false;
         }
+    }
+
+    public abstract class InteractorBase : DetectableObjectBase
+    {
+        
     }
 }

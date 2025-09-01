@@ -9,7 +9,7 @@ namespace Systems.SimpleInteract.Data
     /// </summary>
     /// <typeparam name="TInteractor">Interactor type</typeparam>
     public readonly ref struct InteractionContext<TInteractor>
-        where TInteractor : DetectableObjectBase
+        where TInteractor : InteractorBase<TInteractor>
     {
         [NotNull] public readonly InteractableObjectBase<TInteractor> interactable;
         [NotNull] public readonly TInteractor interactor;

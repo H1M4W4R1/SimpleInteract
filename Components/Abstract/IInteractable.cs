@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using Systems.SimpleInteract.Data;
 
 namespace Systems.SimpleInteract.Components.Abstract
 {
@@ -6,6 +7,7 @@ namespace Systems.SimpleInteract.Components.Abstract
     ///     Accessor for interaction logic.
     /// </summary>
     public interface IInteractable<in TInteractor> : IInteractable
+        where TInteractor : InteractorBase<TInteractor>
     {
         /// <summary>
         ///     Interacts with this object.

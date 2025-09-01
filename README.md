@@ -47,7 +47,7 @@ to provide interaction zone.
 
 ## Creating an interactable player
 
-You simply need to create a custom class that inherits from `InteractorBase`. It is heavily recommended
+You simply need to create a custom class that inherits from `InteractorBase<TSelf>`. It is heavily recommended
 to have custom class for interactable detection and other detection logic to prevent further issues with handling things
 such as player invisibility states which may require you to implement `ISupportGhostDetection` on your custom
 interactable object abstraction layer.
@@ -55,7 +55,7 @@ interactable object abstraction layer.
 Of course, you can also add custom detection events to this class.
 
 ```csharp
-    public sealed class ExamplePlayerFlagObject : DetectableObjectBase
+    public sealed class ExamplePlayerFlagObject : DetectableObjectBase<ExamplePlayerFlagObject>
     {
     }
 ```

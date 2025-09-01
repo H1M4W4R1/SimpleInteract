@@ -18,7 +18,7 @@ namespace Systems.SimpleInteract.Components
     /// </remarks>
     [RequireComponent(typeof(IInteractableDetector))]
     public abstract class InteractableObjectBase<TInteractor> : MonoBehaviour, IInteractable<TInteractor>
-        where TInteractor : DetectableObjectBase
+        where TInteractor : InteractorBase<TInteractor>
     {
         /// <summary>
         ///     Detector linked to this object
@@ -56,7 +56,7 @@ namespace Systems.SimpleInteract.Components
             InteractionContext<TInteractor> context = new(this, interactor);
 
             // Check if object can be interacted with
-            if (CanBeInteractedWith(context))
+            if (CanBeInteractedWith(context) && interactor.CanInteract(context))
                 OnInteract(context);
             else
                 OnInteractFailed(context);
