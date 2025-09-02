@@ -1,5 +1,6 @@
 ﻿using Systems.SimpleDetection.Components.Detectors.Base;
 using Systems.SimpleDetection.Components.Objects.Abstract;
+using Systems.SimpleDetection.Data;
 using Systems.SimpleInteract.Components.Detectors.Abstract;
 
 namespace Systems.SimpleInteract.Components.Detectors
@@ -13,8 +14,8 @@ namespace Systems.SimpleInteract.Components.Detectors
         public event Delegates.ObjectGhostDetectedHandle ObjectGhostDetected;
         public event Delegates.CanBeDetectedHandle ObjectCanBeDetected;
 
-        public override bool CanBeDetected(DetectableObjectBase obj)
-            => ObjectCanBeDetected?.Invoke(obj) ?? true;
+        public override bool CanBeDetected(ObjectDetectionContext context)
+            => ObjectCanBeDetected?.Invoke(context.detectableObject) ?? true;
 
         protected override void OnObjectDetectionStart(DetectableObjectBase obj)
         {

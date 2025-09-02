@@ -15,7 +15,8 @@ namespace Systems.SimpleInteract.Components
         /// <summary>
         ///     Checks if this interactor can interact with given interactable object.
         /// </summary>
-        public virtual bool CanInteract(InteractionContext<TSelf> context) => true;
+        public virtual bool CanInteract(InteractionContext<TSelf> context) =>
+            context.interactable.CanBeInteractedWith(context);
         
         /// <summary>
         ///     Interacts with all detected objects.

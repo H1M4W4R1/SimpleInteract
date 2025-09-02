@@ -56,7 +56,7 @@ namespace Systems.SimpleInteract.Components
             InteractionContext<TInteractor> context = new(this, interactor);
 
             // Check if object can be interacted with
-            if (CanBeInteractedWith(context) && interactor.CanInteract(context))
+            if (interactor.CanInteract(context))
                 OnInteract(context);
             else
                 OnInteractFailed(context);
