@@ -126,7 +126,7 @@ namespace Systems.SimpleInteract.Components
         ///     Used for performance optimization.
         /// </summary>
         /// <param name="obj">Object to check</param>
-        protected virtual bool CanBeDetected(DetectableObjectBase obj) => obj is TInteractor;
+        public virtual bool CanBeDetected(DetectableObjectBase obj) => obj is TInteractor;
 
         
         protected virtual void OnObjectDetectionStart(DetectableObjectBase obj)
