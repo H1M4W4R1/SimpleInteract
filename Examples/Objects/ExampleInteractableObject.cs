@@ -1,4 +1,5 @@
-﻿using Systems.SimpleInteract.Components;
+﻿using Systems.SimpleCore.Operations;
+using Systems.SimpleInteract.Components;
 using Systems.SimpleInteract.Data;
 using Systems.SimpleInteract.Examples.Interactors;
 using UnityEngine;
@@ -10,20 +11,23 @@ namespace Systems.SimpleInteract.Examples.Objects
     /// </summary>
     public sealed class ExampleInteractableObject : InteractableObjectBase<ExamplePlayerFlagObject>
     {
-        [ContextMenu("Test interaction")]
-        private void InteractAsFirstInteractor()
+        [ContextMenu("Test interaction")] private void InteractAsFirstInteractor()
         {
             if (Interactors.Count == 0) return;
             Interact(Interactors[0]);
         }
-        
-        protected override void OnInteract(InteractionContext<ExamplePlayerFlagObject> context)
+
+        protected override void OnInteract(
+            in InteractionContext<ExamplePlayerFlagObject> interactionContext,
+            in OperationResult interactCapabilityResult)
         {
             Debug.Log("Interacted with player flag object");
             Destroy(gameObject);
         }
 
-        protected override void OnInteractFailed(InteractionContext<ExamplePlayerFlagObject> context)
+        protected override void OnInteractFailed(
+            in InteractionContext<ExamplePlayerFlagObject> interactionContext,
+            in OperationResult interactCapabilityResult)
         {
             Debug.Log("Failed to interact with player flag object");
         }

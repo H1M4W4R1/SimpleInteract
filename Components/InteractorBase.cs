@@ -1,4 +1,5 @@
-﻿using Systems.SimpleDetection.Components.Detectors.Abstract;
+﻿using Systems.SimpleCore.Operations;
+using Systems.SimpleDetection.Components.Detectors.Abstract;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Abstract;
 using Systems.SimpleInteract.Data;
@@ -15,7 +16,7 @@ namespace Systems.SimpleInteract.Components
         /// <summary>
         ///     Checks if this interactor can interact with given interactable object.
         /// </summary>
-        public virtual bool CanInteract(InteractionContext<TSelf> context) =>
+        public virtual OperationResult CanInteract(InteractionContext<TSelf> context) =>
             context.interactable.CanBeInteractedWith(context);
         
         /// <summary>

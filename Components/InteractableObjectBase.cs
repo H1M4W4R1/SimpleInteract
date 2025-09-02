@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using Systems.SimpleCore.Operations;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleDetection.Data;
+using Systems.SimpleDetection.Operations;
 using Systems.SimpleInteract.Components.Abstract;
 using Systems.SimpleInteract.Components.Detectors.Abstract;
 using Systems.SimpleInteract.Data;
+using Systems.SimpleInteract.Operations;
 using UnityEngine;
 
 namespace Systems.SimpleInteract.Components
@@ -25,7 +28,7 @@ namespace Systems.SimpleInteract.Components
         ///     Detector linked to this object
         /// </summary>
         private IInteractableDetector _detector;
-        
+
         /// <summary>
         ///     Cache of all interactors that can interact with this object
         ///     at current frame
@@ -41,7 +44,8 @@ namespace Systems.SimpleInteract.Components
         ///     Check if this object can be interacted with
         /// </summary>
         /// <returns>True if this object can be interacted with</returns>
-        public virtual bool CanBeInteractedWith(InteractionContext<TInteractor> context) => true;
+        public virtual OperationResult CanBeInteractedWith(InteractionContext<TInteractor> context) => 
+            InteractOperations.Permitted();
 
         /// <summary>
         ///     Attempts to interact with this object using given interactor.
@@ -57,10 +61,11 @@ namespace Systems.SimpleInteract.Components
             InteractionContext<TInteractor> context = new(this, interactor);
 
             // Check if object can be interacted with
-            if (interactor.CanInteract(context))
-                OnInteract(context);
+            OperationResult interactCapabilityResult = interactor.CanInteract(context);
+            if (interactCapabilityResult)
+                OnInteract(context, interactCapabilityResult);
             else
-                OnInteractFailed(context);
+                OnInteractFailed(context, interactCapabilityResult);
         }
 
         /// <summary>
@@ -68,7 +73,8 @@ namespace Systems.SimpleInteract.Components
         ///     This event is called after <see cref="CanBeInteractedWith"/> has returned false.
         /// </summary>
         /// <param name="context">Context of interaction</param>
-        protected virtual void OnInteractFailed(InteractionContext<TInteractor> context)
+        /// <param name="interactCapabilityResult">Result of interaction capability check</param>
+        protected virtual void OnInteractFailed(in InteractionContext<TInteractor> context, in OperationResult interactCapabilityResult)
         {
         }
 
@@ -77,7 +83,8 @@ namespace Systems.SimpleInteract.Components
         ///     This event is called after <see cref="CanBeInteractedWith"/> has returned true.
         /// </summary>
         /// <param name="context">Context of interaction</param>
-        protected abstract void OnInteract(InteractionContext<TInteractor> context);
+        /// <param name="interactCapabilityResult">Result of interaction capability check</param>
+        protected abstract void OnInteract(in InteractionContext<TInteractor> context, in OperationResult interactCapabilityResult);
 
         /// <summary>
         ///     Called when object enters interaction zone.
@@ -99,13 +106,13 @@ namespace Systems.SimpleInteract.Components
 
         protected void Awake()
         {
-           _detector = GetComponent<IInteractableDetector>();
-           _detector.ObjectCanBeDetected += CanBeDetected;
-           _detector.ObjectDetectionStart += OnObjectDetectionStart;
-           _detector.ObjectDetectionEnd += OnObjectDetectionEnd;
-           _detector.ObjectDetectionFailed += OnObjectDetectionFailed;
-           _detector.ObjectDetected += OnObjectDetected;
-           _detector.ObjectGhostDetected += OnObjectGhostDetected;
+            _detector = GetComponent<IInteractableDetector>();
+            _detector.ObjectCanBeDetected += CanBeDetected;
+            _detector.ObjectDetectionStart += OnObjectDetectionStart;
+            _detector.ObjectDetectionEnd += OnObjectDetectionEnd;
+            _detector.ObjectDetectionFailed += OnObjectDetectionFailed;
+            _detector.ObjectDetected += OnObjectDetected;
+            _detector.ObjectGhostDetected += OnObjectGhostDetected;
         }
 
         protected void OnDestroy()
@@ -127,25 +134,39 @@ namespace Systems.SimpleInteract.Components
         ///     Used for performance optimization.
         /// </summary>
         /// <param name="context">Context of the detection to check</param>
-        public virtual bool CanBeDetected(in ObjectDetectionContext context) => context.detectableObject is TInteractor;
-        
-        protected virtual void OnObjectDetectionStart(in ObjectDetectionContext context)
+        public virtual OperationResult CanBeDetected(in ObjectDetectionContext context)
+        {
+            if (context.detectableObject is TInteractor) return DetectionOperations.Permitted();
+
+            return DetectionOperations.InvalidDetectableObject();
+        }
+
+
+        protected virtual void OnObjectDetectionStart(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
             if (context.detectableObject is TInteractor interactor) OnInteractionZoneEnter(interactor);
         }
 
-        protected virtual void OnObjectDetectionEnd(in ObjectDetectionContext context)
+        protected virtual void OnObjectDetectionEnd(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
             if (context.detectableObject is TInteractor interactor) OnInteractionZoneExit(interactor);
         }
 
-        protected virtual void OnObjectDetectionFailed(in ObjectDetectionContext context)
+        protected virtual void OnObjectDetectionFailed(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
             if (context.detectableObject is TInteractor detectableObjectBase)
                 _interactors.RemoveAll(o => ReferenceEquals(o, detectableObjectBase));
         }
 
-        protected virtual void OnObjectDetected(in ObjectDetectionContext context)
+        protected virtual void OnObjectDetected(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
             // Skip if object is not of type TDetectableObjectBase
             if (context.detectableObject is not TInteractor detectableObjectBase) return;
@@ -154,11 +175,13 @@ namespace Systems.SimpleInteract.Components
             if (!_interactors.Contains(detectableObjectBase)) _interactors.Add(detectableObjectBase);
         }
 
-        protected virtual void OnObjectGhostDetected(in ObjectDetectionContext context)
+        protected virtual void OnObjectGhostDetected(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
             // Safety fallback, technically ghosts should not be supported by interactable objects,
             // but we keep it just in case somebody decides otherwise and adds ghost support to object class.
-            OnObjectDetected(context);
+            OnObjectDetected(context, detectionResult);
         }
 
 #endregion

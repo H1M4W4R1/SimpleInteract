@@ -1,7 +1,11 @@
-﻿using Systems.SimpleDetection.Components.Detectors.Base;
+﻿using AiEditorToolsSdk.Components.Common.Responses.Wrappers;
+using Systems.SimpleCore.Operations;
+using Systems.SimpleDetection.Components.Detectors.Base;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleDetection.Data;
+using Systems.SimpleDetection.Operations;
 using Systems.SimpleInteract.Components.Detectors.Abstract;
+using UnityEngine;
 
 namespace Systems.SimpleInteract.Components.Detectors
 {
@@ -14,36 +18,52 @@ namespace Systems.SimpleInteract.Components.Detectors
         public event Delegates.ObjectGhostDetectedHandle ObjectGhostDetected;
         public event Delegates.CanBeDetectedHandle ObjectCanBeDetected;
 
-        public override bool CanBeDetected(in ObjectDetectionContext context)
-            => ObjectCanBeDetected?.Invoke(context) ?? true;
-
-        protected override void OnObjectDetectionStart(in ObjectDetectionContext context)
+        public override OperationResult CanDetect(in ObjectDetectionContext context)
         {
-            base.OnObjectDetectionStart(context);
-            ObjectDetectionStart?.Invoke(context);
+            OperationResult baseDetection = base.CanDetect(context);
+            if (!baseDetection) return baseDetection;
+
+            if (ObjectCanBeDetected is null) return DetectionOperations.Permitted();
+            return ObjectCanBeDetected.Invoke(context);
         }
 
-        protected override void OnObjectDetectionEnd(in ObjectDetectionContext context)
+        protected override void OnObjectDetectionStart(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
-            base.OnObjectDetectionEnd(context);
-            ObjectDetectionEnd?.Invoke(context);
+            base.OnObjectDetectionStart(context, detectionResult);
+            ObjectDetectionStart?.Invoke(context, detectionResult);
         }
 
-        protected override void OnObjectDetectionFailed(in ObjectDetectionContext context)
+        protected override void OnObjectDetectionEnd(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
-            base.OnObjectDetectionFailed(context);
-            ObjectDetectionFailed?.Invoke(context);
+            base.OnObjectDetectionEnd(context, detectionResult);
+            ObjectDetectionEnd?.Invoke(context, detectionResult);
         }
 
-        protected override void OnObjectDetected(in ObjectDetectionContext context)
+        protected override void OnObjectDetectionFailed(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
-            base.OnObjectDetected(context);
-            ObjectDetected?.Invoke(context);
+            base.OnObjectDetectionFailed(context, detectionResult);
+            ObjectDetectionFailed?.Invoke(context, detectionResult);
         }
 
-        protected override void OnObjectGhostDetected(in ObjectDetectionContext context)
+        protected override void OnObjectDetected(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
         {
-            ObjectGhostDetected?.Invoke(context);
+            base.OnObjectDetected(context, detectionResult);
+            ObjectDetected?.Invoke(context, detectionResult);
+        }
+
+        protected override void OnObjectGhostDetected(
+            in ObjectDetectionContext context,
+            in OperationResult detectionResult)
+        {
+            ObjectGhostDetected?.Invoke(context, detectionResult);
         }
     }
 }
