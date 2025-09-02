@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Systems.SimpleDetection.Components.Objects.Abstract;
+using Systems.SimpleDetection.Data;
 using Systems.SimpleInteract.Components.Abstract;
 using Systems.SimpleInteract.Components.Detectors.Abstract;
 using Systems.SimpleInteract.Data;
@@ -125,40 +126,39 @@ namespace Systems.SimpleInteract.Components
         ///     Checks if object can be detected by this interactor.
         ///     Used for performance optimization.
         /// </summary>
-        /// <param name="obj">Object to check</param>
-        public virtual bool CanBeDetected(DetectableObjectBase obj) => obj is TInteractor;
-
+        /// <param name="context">Context of the detection to check</param>
+        public virtual bool CanBeDetected(in ObjectDetectionContext context) => context.detectableObject is TInteractor;
         
-        protected virtual void OnObjectDetectionStart(DetectableObjectBase obj)
+        protected virtual void OnObjectDetectionStart(in ObjectDetectionContext context)
         {
-            if (obj is TInteractor interactor) OnInteractionZoneEnter(interactor);
+            if (context.detectableObject is TInteractor interactor) OnInteractionZoneEnter(interactor);
         }
 
-        protected virtual void OnObjectDetectionEnd(DetectableObjectBase obj)
+        protected virtual void OnObjectDetectionEnd(in ObjectDetectionContext context)
         {
-            if (obj is TInteractor interactor) OnInteractionZoneExit(interactor);
+            if (context.detectableObject is TInteractor interactor) OnInteractionZoneExit(interactor);
         }
 
-        protected virtual void OnObjectDetectionFailed(DetectableObjectBase obj)
+        protected virtual void OnObjectDetectionFailed(in ObjectDetectionContext context)
         {
-            if (obj is TInteractor detectableObjectBase)
+            if (context.detectableObject is TInteractor detectableObjectBase)
                 _interactors.RemoveAll(o => ReferenceEquals(o, detectableObjectBase));
         }
 
-        protected virtual void OnObjectDetected(DetectableObjectBase obj)
+        protected virtual void OnObjectDetected(in ObjectDetectionContext context)
         {
             // Skip if object is not of type TDetectableObjectBase
-            if (obj is not TInteractor detectableObjectBase) return;
+            if (context.detectableObject is not TInteractor detectableObjectBase) return;
 
             // Add interactor if it is not already in the list
             if (!_interactors.Contains(detectableObjectBase)) _interactors.Add(detectableObjectBase);
         }
 
-        protected virtual void OnObjectGhostDetected(DetectableObjectBase obj)
+        protected virtual void OnObjectGhostDetected(in ObjectDetectionContext context)
         {
             // Safety fallback, technically ghosts should not be supported by interactable objects,
             // but we keep it just in case somebody decides otherwise and adds ghost support to object class.
-            OnObjectDetected(obj);
+            OnObjectDetected(context);
         }
 
 #endregion

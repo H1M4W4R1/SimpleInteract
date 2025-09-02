@@ -14,36 +14,36 @@ namespace Systems.SimpleInteract.Components.Detectors
         public event Delegates.ObjectGhostDetectedHandle ObjectGhostDetected;
         public event Delegates.CanBeDetectedHandle ObjectCanBeDetected;
 
-        public override bool CanBeDetected(ObjectDetectionContext context)
-            => ObjectCanBeDetected?.Invoke(context.detectableObject) ?? true;
+        public override bool CanBeDetected(in ObjectDetectionContext context)
+            => ObjectCanBeDetected?.Invoke(context) ?? true;
 
-        protected override void OnObjectDetectionStart(DetectableObjectBase obj)
+        protected override void OnObjectDetectionStart(in ObjectDetectionContext context)
         {
-            base.OnObjectDetectionStart(obj);
-            ObjectDetectionStart?.Invoke(obj);
+            base.OnObjectDetectionStart(context);
+            ObjectDetectionStart?.Invoke(context);
         }
 
-        protected override void OnObjectDetectionEnd(DetectableObjectBase obj)
+        protected override void OnObjectDetectionEnd(in ObjectDetectionContext context)
         {
-            base.OnObjectDetectionEnd(obj);
-            ObjectDetectionEnd?.Invoke(obj);
+            base.OnObjectDetectionEnd(context);
+            ObjectDetectionEnd?.Invoke(context);
         }
 
-        protected override void OnObjectDetectionFailed(DetectableObjectBase obj)
+        protected override void OnObjectDetectionFailed(in ObjectDetectionContext context)
         {
-            base.OnObjectDetectionFailed(obj);
-            ObjectDetectionFailed?.Invoke(obj);
+            base.OnObjectDetectionFailed(context);
+            ObjectDetectionFailed?.Invoke(context);
         }
 
-        protected override void OnObjectDetected(DetectableObjectBase obj)
+        protected override void OnObjectDetected(in ObjectDetectionContext context)
         {
-            base.OnObjectDetected(obj);
-            ObjectDetected?.Invoke(obj);
+            base.OnObjectDetected(context);
+            ObjectDetected?.Invoke(context);
         }
 
-        protected override void OnObjectGhostDetected(DetectableObjectBase obj)
+        protected override void OnObjectGhostDetected(in ObjectDetectionContext context)
         {
-            ObjectGhostDetected?.Invoke(obj);
+            ObjectGhostDetected?.Invoke(context);
         }
     }
 }
