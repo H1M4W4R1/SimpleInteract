@@ -13,7 +13,7 @@ namespace Systems.SimpleInteract.Components.Detectors
         public event Delegates.ObjectGhostDetectedHandle ObjectGhostDetected;
         public event Delegates.CanBeDetectedHandle ObjectCanBeDetected;
 
-        protected override bool CanBeDetected(DetectableObjectBase obj)
+        public override bool CanBeDetected(DetectableObjectBase obj)
             => ObjectCanBeDetected?.Invoke(obj) ?? true;
 
         protected override void OnObjectDetectionStart(DetectableObjectBase obj)
