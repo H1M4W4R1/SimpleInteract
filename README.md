@@ -4,15 +4,9 @@
 </div>
 
 # About
+SimpleInteract is a subsystem of Simple Kit that creates interaction capabilities.
 
-SimpleInteract is a Unity3D system that creates interaction capabilities.
-
-# Requirements
-
-* Unity.Burst
-* Unity.Collections
-* Unity.Mathematics
-* [**SimpleDetection Framework by H1M4W4R1**](https://github.com/H1M4W4R1/SimpleDetection)
+*For requirements check .asmdef*
 
 # Usage
 
