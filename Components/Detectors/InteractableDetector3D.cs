@@ -1,6 +1,5 @@
 ﻿using Systems.SimpleCore.Operations;
 using Systems.SimpleDetection.Components.Detectors.Base;
-using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleDetection.Data;
 using Systems.SimpleDetection.Operations;
 using Systems.SimpleInteract.Components.Detectors.Abstract;

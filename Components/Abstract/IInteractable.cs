@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using JetBrains.Annotations;
-using Systems.SimpleInteract.Data;
+﻿using JetBrains.Annotations;
 
 namespace Systems.SimpleInteract.Components.Abstract
 {
@@ -12,12 +10,7 @@ namespace Systems.SimpleInteract.Components.Abstract
         /// <summary>
         ///     Interacts with this object.
         /// </summary>
-        /// <typeparam name="TInteractor">Type of interactor</typeparam>
         /// <param name="interactor">Interactor that is attempting to interact with this object</param>
-        public void InteractWith<TInteractor>([NotNull] TInteractor interactor)
-            where TInteractor : InteractorBase
-        {
-            // TODO: Implement this!
-        }
+        public void Interact([NotNull] InteractorBase interactor);
     }
 }

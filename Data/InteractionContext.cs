@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components;
 
 namespace Systems.SimpleInteract.Data

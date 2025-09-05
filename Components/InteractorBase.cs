@@ -37,7 +37,7 @@ namespace Systems.SimpleInteract.Components
                 if (detectorTriggered is not IInteractable interactableObject) continue;
                 
                 // Handle interaction
-                interactableObject.InteractWith(this);
+                interactableObject.Interact(this);
                 nInteractionsPerformed++;
             }
             
@@ -63,7 +63,7 @@ namespace Systems.SimpleInteract.Components
                 if (detectorTriggered is not IInteractable interactableObject) continue;
                 
                 // Handle interaction
-                interactableObject.InteractWith(this);
+                interactableObject.Interact(this);
                 return true;
             }
 

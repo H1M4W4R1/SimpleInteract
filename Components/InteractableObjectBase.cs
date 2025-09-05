@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using Systems.SimpleCore.Operations;
-using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleDetection.Data;
 using Systems.SimpleDetection.Operations;
 using Systems.SimpleInteract.Components.Abstract;
@@ -181,7 +180,11 @@ namespace Systems.SimpleInteract.Components
             // but we keep it just in case somebody decides otherwise and adds ghost support to object class.
             OnObjectDetected(context, detectionResult);
         }
+        
+    
 
 #endregion
+
+       
     }
 }
