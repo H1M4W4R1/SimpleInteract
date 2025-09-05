@@ -8,12 +8,53 @@ namespace Systems.SimpleInteract.Components.Detectors
 {
     public sealed class InteractableDetector3D : Sphere3DDetector, IInteractableDetector
     {
-        public event Delegates.ObjectDetectedHandle ObjectDetected;
-        public event Delegates.ObjectDetectionFailedHandle ObjectDetectionFailed;
-        public event Delegates.ObjectDetectionEndHandle ObjectDetectionEnd;
-        public event Delegates.ObjectDetectionStartHandle ObjectDetectionStart;
-        public event Delegates.ObjectGhostDetectedHandle ObjectGhostDetected;
-        public event Delegates.CanBeDetectedHandle ObjectCanBeDetected;
+
+#region Internal events
+
+        private event Delegates.ObjectDetectedHandle ObjectDetected;
+        private event Delegates.ObjectDetectionFailedHandle ObjectDetectionFailed;
+        private event Delegates.ObjectDetectionEndHandle ObjectDetectionEnd;
+        private event Delegates.ObjectDetectionStartHandle ObjectDetectionStart;
+        private event Delegates.ObjectGhostDetectedHandle ObjectGhostDetected;
+        private event Delegates.CanBeDetectedHandle ObjectCanBeDetected;
+
+        event Delegates.ObjectDetectedHandle IInteractableDetector.ObjectDetected
+        {
+            add => ObjectDetected += value;
+            remove => ObjectDetected -= value;
+        }
+
+        event Delegates.ObjectDetectionFailedHandle IInteractableDetector.ObjectDetectionFailed
+        {
+            add => this.ObjectDetectionFailed += value;
+            remove => this.ObjectDetectionFailed -= value;
+        }
+
+        event Delegates.ObjectDetectionEndHandle IInteractableDetector.ObjectDetectionEnd
+        {
+            add => this.ObjectDetectionEnd += value;
+            remove => this.ObjectDetectionEnd -= value;
+        }
+
+        event Delegates.ObjectDetectionStartHandle IInteractableDetector.ObjectDetectionStart
+        {
+            add => this.ObjectDetectionStart += value;
+            remove => this.ObjectDetectionStart -= value;
+        }
+
+        event Delegates.ObjectGhostDetectedHandle IInteractableDetector.ObjectGhostDetected
+        {
+            add => this.ObjectGhostDetected += value;
+            remove => this.ObjectGhostDetected -= value;
+        }
+
+        event Delegates.CanBeDetectedHandle IInteractableDetector.ObjectCanBeDetected
+        {
+            add => this.ObjectCanBeDetected += value;
+            remove => this.ObjectCanBeDetected -= value;
+        }
+
+#endregion
 
         protected override OperationResult CanDetect(in ObjectDetectionContext context)
         {
