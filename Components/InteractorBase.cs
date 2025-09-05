@@ -10,13 +10,13 @@ namespace Systems.SimpleInteract.Components
     /// <summary>
     ///     Basic interactor component.
     /// </summary>
-    public abstract class InteractorBase<TSelf> : InteractorBase
-        where TSelf : InteractorBase<TSelf>
+    public abstract class InteractorBase<TSelfSealed> : InteractorBase
+        where TSelfSealed : InteractorBase<TSelfSealed>, new()
     {
         /// <summary>
         ///     Checks if this interactor can interact with given interactable object.
         /// </summary>
-        public virtual OperationResult CanInteract(InteractionContext<TSelf> context) =>
+        public virtual OperationResult CanInteract(InteractionContext<TSelfSealed> context) =>
             context.interactable.CanBeInteractedWith(context);
         
         /// <summary>
@@ -38,7 +38,7 @@ namespace Systems.SimpleInteract.Components
                 if (detectorTriggered is not IInteractable interactableObject) continue;
                 
                 // Handle interaction
-                interactableObject.Interact(this);
+                interactableObject.InteractWith((TSelfSealed) this);
                 nInteractionsPerformed++;
             }
             
@@ -64,7 +64,7 @@ namespace Systems.SimpleInteract.Components
                 if (detectorTriggered is not IInteractable interactableObject) continue;
                 
                 // Handle interaction
-                interactableObject.Interact(this);
+                interactableObject.InteractWith((TSelfSealed) this);
                 return true;
             }
 

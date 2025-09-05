@@ -15,14 +15,14 @@ namespace Systems.SimpleInteract.Components
     ///     Represents object that can be interacted with in 2D space
     /// </summary>
     /// <remarks>
-    ///     <see cref="TInteractor"/> is provided with high intention to reduce performance issues
+    ///     <see cref="TInteractorSealed"/> is provided with high intention to reduce performance issues
     ///     when having a lot of interaction objects on the scene - it allows to reduce raycast amount
     ///     by ignoring objects that are not e.g. player or other interactors.
     ///     For reference see <see cref="CanBeDetected"/> method.
     /// </remarks>
     [RequireComponent(typeof(IInteractableDetector))]
-    public abstract class InteractableObjectBase<TInteractor> : MonoBehaviour, IInteractable<TInteractor>
-        where TInteractor : InteractorBase<TInteractor>
+    public abstract class InteractableObjectBase<TInteractorSealed> : MonoBehaviour, IInteractable<TInteractorSealed>
+        where TInteractorSealed : InteractorBase<TInteractorSealed>, new()
     {
         /// <summary>
         ///     Detector linked to this object
@@ -33,18 +33,18 @@ namespace Systems.SimpleInteract.Components
         ///     Cache of all interactors that can interact with this object
         ///     at current frame
         /// </summary>
-        private readonly List<TInteractor> _interactors = new();
+        private readonly List<TInteractorSealed> _interactors = new();
 
         /// <summary>
         ///     All interactors that are able to interact at current frame
         /// </summary>
-        public IReadOnlyList<TInteractor> Interactors => _interactors;
+        public IReadOnlyList<TInteractorSealed> Interactors => _interactors;
 
         /// <summary>
         ///     Check if this object can be interacted with
         /// </summary>
         /// <returns>True if this object can be interacted with</returns>
-        public virtual OperationResult CanBeInteractedWith(InteractionContext<TInteractor> context) => 
+        public virtual OperationResult CanBeInteractedWith(InteractionContext<TInteractorSealed> context) => 
             InteractOperations.Permitted();
 
         /// <summary>
@@ -55,10 +55,10 @@ namespace Systems.SimpleInteract.Components
         ///     otherwise <see cref="OnInteractFailed"/> is called.
         /// </summary>
         /// <param name="interactor">Object that is attempting to interact with this object</param>
-        public void Interact(TInteractor interactor)
+        public void Interact(TInteractorSealed interactor)
         {
             // Create context
-            InteractionContext<TInteractor> context = new(this, interactor);
+            InteractionContext<TInteractorSealed> context = new(this, interactor);
 
             // Check if object can be interacted with
             OperationResult interactCapabilityResult = interactor.CanInteract(context);
@@ -74,7 +74,7 @@ namespace Systems.SimpleInteract.Components
         /// </summary>
         /// <param name="context">Context of interaction</param>
         /// <param name="interactCapabilityResult">Result of interaction capability check</param>
-        protected virtual void OnInteractFailed(in InteractionContext<TInteractor> context, in OperationResult interactCapabilityResult)
+        protected virtual void OnInteractFailed(in InteractionContext<TInteractorSealed> context, in OperationResult interactCapabilityResult)
         {
         }
 
@@ -84,13 +84,13 @@ namespace Systems.SimpleInteract.Components
         /// </summary>
         /// <param name="context">Context of interaction</param>
         /// <param name="interactCapabilityResult">Result of interaction capability check</param>
-        protected abstract void OnInteract(in InteractionContext<TInteractor> context, in OperationResult interactCapabilityResult);
+        protected abstract void OnInteract(in InteractionContext<TInteractorSealed> context, in OperationResult interactCapabilityResult);
 
         /// <summary>
         ///     Called when object enters interaction zone.
         /// </summary>
         /// <param name="obj">Object that entered interaction zone</param>
-        protected virtual void OnInteractionZoneEnter(TInteractor obj)
+        protected virtual void OnInteractionZoneEnter(TInteractorSealed obj)
         {
         }
 
@@ -98,7 +98,7 @@ namespace Systems.SimpleInteract.Components
         ///     Called when object exits interaction zone.
         /// </summary>
         /// <param name="obj">Object that exited interaction zone</param>
-        protected virtual void OnInteractionZoneExit(TInteractor obj)
+        protected virtual void OnInteractionZoneExit(TInteractorSealed obj)
         {
         }
 
@@ -136,7 +136,7 @@ namespace Systems.SimpleInteract.Components
         /// <param name="context">Context of the detection to check</param>
         public virtual OperationResult CanBeDetected(in ObjectDetectionContext context)
         {
-            if (context.detectableObject is TInteractor) return DetectionOperations.Permitted();
+            if (context.detectableObject is TInteractorSealed) return DetectionOperations.Permitted();
 
             return DetectionOperations.InvalidDetectableObject();
         }
@@ -146,21 +146,21 @@ namespace Systems.SimpleInteract.Components
             in ObjectDetectionContext context,
             in OperationResult detectionResult)
         {
-            if (context.detectableObject is TInteractor interactor) OnInteractionZoneEnter(interactor);
+            if (context.detectableObject is TInteractorSealed interactor) OnInteractionZoneEnter(interactor);
         }
 
         protected virtual void OnObjectDetectionEnd(
             in ObjectDetectionContext context,
             in OperationResult detectionResult)
         {
-            if (context.detectableObject is TInteractor interactor) OnInteractionZoneExit(interactor);
+            if (context.detectableObject is TInteractorSealed interactor) OnInteractionZoneExit(interactor);
         }
 
         protected virtual void OnObjectDetectionFailed(
             in ObjectDetectionContext context,
             in OperationResult detectionResult)
         {
-            if (context.detectableObject is TInteractor detectableObjectBase)
+            if (context.detectableObject is TInteractorSealed detectableObjectBase)
                 _interactors.RemoveAll(o => ReferenceEquals(o, detectableObjectBase));
         }
 
@@ -169,7 +169,7 @@ namespace Systems.SimpleInteract.Components
             in OperationResult detectionResult)
         {
             // Skip if object is not of type TDetectableObjectBase
-            if (context.detectableObject is not TInteractor detectableObjectBase) return;
+            if (context.detectableObject is not TInteractorSealed detectableObjectBase) return;
 
             // Add interactor if it is not already in the list
             if (!_interactors.Contains(detectableObjectBase)) _interactors.Add(detectableObjectBase);

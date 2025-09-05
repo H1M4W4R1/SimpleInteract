@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using Systems.SimpleInteract.Data;
 
 namespace Systems.SimpleInteract.Components.Abstract
@@ -6,23 +7,16 @@ namespace Systems.SimpleInteract.Components.Abstract
     /// <summary>
     ///     Accessor for interaction logic.
     /// </summary>
-    public interface IInteractable<in TInteractor> : IInteractable
-        where TInteractor : InteractorBase<TInteractor>
+    public interface IInteractable<in TInteractorSealed> : IInteractable
+        where TInteractorSealed : InteractorBase<TInteractorSealed>, new()
     {
         /// <summary>
         ///     Interacts with this object.
         /// </summary>
         /// <param name="interactor">Interactor that is attempting to interact with this object</param>
-        public void Interact([NotNull] TInteractor interactor);
-
-        // Jump into local implementation aka. black magic fuckery
-        void IInteractable.Interact(InteractorBase interactor)
-        {
-            if (interactor is not TInteractor validInteractor) return;
-            Interact(validInteractor);
-        }
+        public void Interact([NotNull] TInteractorSealed interactor);
     }
-    
+
     /// <summary>
     ///     Accessor for interaction logic.
     /// </summary>
@@ -31,7 +25,12 @@ namespace Systems.SimpleInteract.Components.Abstract
         /// <summary>
         ///     Interacts with this object.
         /// </summary>
+        /// <typeparam name="TInteractor">Type of interactor</typeparam>
         /// <param name="interactor">Interactor that is attempting to interact with this object</param>
-        public void Interact([NotNull] InteractorBase interactor);
+        public void InteractWith<TInteractor>([NotNull] TInteractor interactor)
+            where TInteractor : InteractorBase<TInteractor>, new()
+        {
+            if (this is IInteractable<TInteractor> directlyInteractable) directlyInteractable.Interact(interactor);
+        }
     }
 }
