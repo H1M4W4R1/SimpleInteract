@@ -2,6 +2,7 @@
 using Systems.SimpleDetection.Components.Detectors.Abstract;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Abstract;
+using Systems.SimpleInteract.Components.Detectors.Abstract;
 using Systems.SimpleInteract.Data;
 using UnityEngine;
 
@@ -34,7 +35,12 @@ namespace Systems.SimpleInteract.Components
                 ObjectDetectorBase detectorTriggered = DetectedBy[nInteractable];
                 
                 // Skip if not interactable
-                if (detectorTriggered is not IInteractable interactableObject) continue;
+                if (detectorTriggered is not IInteractableDetector detector) continue;
+
+                if (detector is not Component component) continue;
+                
+                // Get interactable object
+                InteractableObjectBase interactableObject = component.GetComponent<InteractableObjectBase>();
                 
                 // Handle interaction
                 interactableObject.Interact(this);
@@ -60,7 +66,12 @@ namespace Systems.SimpleInteract.Components
                 ObjectDetectorBase detectorTriggered = DetectedBy[nInteractable];
                 
                 // Skip if not interactable
-                if (detectorTriggered is not IInteractable interactableObject) continue;
+                if (detectorTriggered is not IInteractableDetector detector) continue;
+                
+                if (detector is not Component component) continue;
+                
+                // Get interactable object
+                InteractableObjectBase interactableObject = component.GetComponent<InteractableObjectBase>();
                 
                 // Handle interaction
                 interactableObject.Interact(this);
