@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using Systems.SimpleCore.Operations;
+using Systems.SimpleCore.Utility.Enums;
 using Systems.SimpleDetection.Data;
 using Systems.SimpleDetection.Operations;
 using Systems.SimpleInteract.Components.Abstract;
@@ -12,14 +12,8 @@ using UnityEngine;
 namespace Systems.SimpleInteract.Components
 {
     /// <summary>
-    ///     Represents object that can be interacted with in 2D space
+    ///     Represents object that can be interacted with
     /// </summary>
-    /// <remarks>
-    ///     <see cref="TInteractorSealed"/> is provided with high intention to reduce performance issues
-    ///     when having a lot of interaction objects on the scene - it allows to reduce raycast amount
-    ///     by ignoring objects that are not e.g. player or other interactors.
-    ///     For reference see <see cref="CanBeDetected"/> method.
-    /// </remarks>
     [RequireComponent(typeof(IInteractableDetector))]
     public abstract class InteractableObjectBase : MonoBehaviour, IInteractable
     {
@@ -43,28 +37,40 @@ namespace Systems.SimpleInteract.Components
         ///     Check if this object can be interacted with
         /// </summary>
         /// <returns>True if this object can be interacted with</returns>
-        public virtual OperationResult CanBeInteractedWith(InteractionContext context) => 
+        public virtual OperationResult CanBeInteractedWith(InteractionContext context) =>
             InteractOperations.Permitted();
 
         /// <summary>
         ///     Attempts to interact with this object using given interactor.
         ///     This method is the single entry point for all interaction logic.
-        ///
+        /// 
         ///     If this object can be interacted with, then <see cref="OnInteract"/> is called,
         ///     otherwise <see cref="OnInteractFailed"/> is called.
         /// </summary>
         /// <param name="interactor">Object that is attempting to interact with this object</param>
-        public void Interact([NotNull] InteractorBase interactor)
+        /// <param name="actionSource">Source of action</param>
+        public OperationResult Interact(
+            InteractorBase interactor,
+            ActionSource actionSource = ActionSource.External)
         {
             // Create context
             InteractionContext context = new(this, interactor);
 
             // Check if object can be interacted with
             OperationResult interactCapabilityResult = interactor.CanInteract(context);
+
+            // Skip if interaction is not external
+            if (actionSource != ActionSource.External)
+                return interactCapabilityResult ? InteractOperations.Interacted() : interactCapabilityResult;
+            
+            // Hope compiler will handle this convoluted mess
             if (interactCapabilityResult)
                 OnInteract(context, interactCapabilityResult);
             else
                 OnInteractFailed(context, interactCapabilityResult);
+
+            // Internal interaction
+            return interactCapabilityResult ? InteractOperations.Interacted() : interactCapabilityResult;
         }
 
         /// <summary>
@@ -73,7 +79,9 @@ namespace Systems.SimpleInteract.Components
         /// </summary>
         /// <param name="context">Context of interaction</param>
         /// <param name="interactCapabilityResult">Result of interaction capability check</param>
-        protected virtual void OnInteractFailed(in InteractionContext context, in OperationResult interactCapabilityResult)
+        protected virtual void OnInteractFailed(
+            in InteractionContext context,
+            in OperationResult interactCapabilityResult)
         {
         }
 
@@ -83,7 +91,9 @@ namespace Systems.SimpleInteract.Components
         /// </summary>
         /// <param name="context">Context of interaction</param>
         /// <param name="interactCapabilityResult">Result of interaction capability check</param>
-        protected abstract void OnInteract(in InteractionContext context, in OperationResult interactCapabilityResult);
+        protected abstract void OnInteract(
+            in InteractionContext context,
+            in OperationResult interactCapabilityResult);
 
         /// <summary>
         ///     Called when object enters interaction zone.
@@ -180,11 +190,7 @@ namespace Systems.SimpleInteract.Components
             // but we keep it just in case somebody decides otherwise and adds ghost support to object class.
             OnObjectDetected(context, detectionResult);
         }
-        
-    
 
 #endregion
-
-       
     }
 }

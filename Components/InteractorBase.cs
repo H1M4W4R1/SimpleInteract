@@ -3,6 +3,7 @@ using Systems.SimpleDetection.Components.Detectors.Abstract;
 using Systems.SimpleDetection.Components.Objects.Abstract;
 using Systems.SimpleInteract.Components.Abstract;
 using Systems.SimpleInteract.Data;
+using Systems.SimpleInteract.Operations;
 using UnityEngine;
 
 namespace Systems.SimpleInteract.Components
@@ -49,9 +50,9 @@ namespace Systems.SimpleInteract.Components
         /// </summary>
         /// <returns>True if interaction was performed, false otherwise</returns>
         [ContextMenu("Interact with first object")]
-        public bool Interact()
+        public OperationResult Interact()
         {
-            if (DetectedBy.Count == 0) return false; 
+            if (DetectedBy.Count == 0) return InteractOperations.NoObjectsInRange();
 
             // Iterate over all detected objects
             for (int nInteractable = 0; nInteractable < DetectedBy.Count; nInteractable++)
@@ -63,11 +64,11 @@ namespace Systems.SimpleInteract.Components
                 if (detectorTriggered is not IInteractable interactableObject) continue;
                 
                 // Handle interaction
-                interactableObject.Interact(this);
-                return true;
+                return interactableObject.Interact(this);
             }
 
-            return false;
+            // Safety fallback
+            return InteractOperations.NoObjectsInRange();
         }
     }
 }
