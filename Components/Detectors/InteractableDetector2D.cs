@@ -15,7 +15,7 @@ namespace Systems.SimpleInteract.Components.Detectors
         public event Delegates.ObjectGhostDetectedHandle ObjectGhostDetected;
         public event Delegates.CanBeDetectedHandle ObjectCanBeDetected;
 
-        public override OperationResult CanDetect(in ObjectDetectionContext context)
+        protected override OperationResult CanDetect(in ObjectDetectionContext context)
         {
             OperationResult baseDetection = base.CanDetect(context);
             if (!baseDetection) return baseDetection;

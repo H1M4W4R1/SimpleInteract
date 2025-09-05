@@ -42,7 +42,7 @@ namespace Systems.SimpleInteract.Components
         ///     Check if this object can be interacted with
         /// </summary>
         /// <returns>True if this object can be interacted with</returns>
-        public virtual OperationResult CanBeInteractedWith(InteractionContext context) => 
+        protected internal virtual OperationResult CanBeInteractedWith(InteractionContext context) => 
             InteractOperations.Permitted();
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Systems.SimpleInteract.Components
         ///     otherwise <see cref="OnInteractFailed"/> is called.
         /// </summary>
         /// <param name="interactor">Object that is attempting to interact with this object</param>
-        public OperationResult Interact([NotNull] InteractorBase interactor)
+        protected internal OperationResult Interact([NotNull] InteractorBase interactor)
         {
             // Create context
             InteractionContext context = new(this, interactor);
@@ -136,7 +136,7 @@ namespace Systems.SimpleInteract.Components
         ///     Used for performance optimization.
         /// </summary>
         /// <param name="context">Context of the detection to check</param>
-        public virtual OperationResult CanBeDetected(in ObjectDetectionContext context)
+        protected internal virtual OperationResult CanBeDetected(in ObjectDetectionContext context)
         {
             return DetectionOperations.Permitted();
         }

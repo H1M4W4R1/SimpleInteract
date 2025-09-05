@@ -19,13 +19,13 @@ namespace Systems.SimpleInteract.Examples.Objects
             Interact(Interactors[0]);
         }
 
-        public override OperationResult CanBeDetected(in ObjectDetectionContext context)
+        protected internal override OperationResult CanBeDetected(in ObjectDetectionContext context)
         {
             if (context.detectableObject is not ExamplePlayerFlagObject) return InteractOperations.Denied();
             return InteractOperations.Permitted();
         }
 
-        public override OperationResult CanBeInteractedWith(InteractionContext context)
+        protected internal override OperationResult CanBeInteractedWith(InteractionContext context)
         {
             if (context.interactor is not ExamplePlayerFlagObject) return InteractOperations.Denied();
             return InteractOperations.Permitted();

@@ -16,7 +16,7 @@ namespace Systems.SimpleInteract.Components
         /// <summary>
         ///     Checks if this interactor can interact with given interactable object.
         /// </summary>
-        public virtual OperationResult CanInteract(InteractionContext context) =>
+        protected internal virtual OperationResult CanInteract(InteractionContext context) =>
             context.interactable.CanBeInteractedWith(context);
 
 #if UNITY_EDITOR
