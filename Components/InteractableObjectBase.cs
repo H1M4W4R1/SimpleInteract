@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 using Systems.SimpleCore.Operations;
 using Systems.SimpleDetection.Data;
 using Systems.SimpleDetection.Operations;
-using Systems.SimpleInteract.Components.Abstract;
 using Systems.SimpleInteract.Components.Detectors.Abstract;
 using Systems.SimpleInteract.Data;
 using Systems.SimpleInteract.Operations;
@@ -21,7 +20,7 @@ namespace Systems.SimpleInteract.Components
     ///     For reference see <see cref="CanBeDetected"/> method.
     /// </remarks>
     [RequireComponent(typeof(IInteractableDetector))]
-    public abstract class InteractableObjectBase : MonoBehaviour, IInteractable
+    public abstract class InteractableObjectBase : MonoBehaviour
     {
         /// <summary>
         ///     Detector linked to this object
@@ -54,7 +53,7 @@ namespace Systems.SimpleInteract.Components
         ///     otherwise <see cref="OnInteractFailed"/> is called.
         /// </summary>
         /// <param name="interactor">Object that is attempting to interact with this object</param>
-        public void Interact([NotNull] InteractorBase interactor)
+        public OperationResult Interact([NotNull] InteractorBase interactor)
         {
             // Create context
             InteractionContext context = new(this, interactor);
@@ -62,9 +61,13 @@ namespace Systems.SimpleInteract.Components
             // Check if object can be interacted with
             OperationResult interactCapabilityResult = interactor.CanInteract(context);
             if (interactCapabilityResult)
+            {
                 OnInteract(context, interactCapabilityResult);
-            else
-                OnInteractFailed(context, interactCapabilityResult);
+                return InteractOperations.Interacted();
+            }
+
+            OnInteractFailed(context, interactCapabilityResult);
+            return interactCapabilityResult;
         }
 
         /// <summary>

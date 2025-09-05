@@ -1,9 +1,9 @@
 ﻿using Systems.SimpleCore.Operations;
 using Systems.SimpleDetection.Components.Detectors.Abstract;
 using Systems.SimpleDetection.Components.Objects.Abstract;
-using Systems.SimpleInteract.Components.Abstract;
 using Systems.SimpleInteract.Components.Detectors.Abstract;
 using Systems.SimpleInteract.Data;
+using Systems.SimpleInteract.Operations;
 using UnityEngine;
 
 namespace Systems.SimpleInteract.Components
@@ -18,67 +18,76 @@ namespace Systems.SimpleInteract.Components
         /// </summary>
         public virtual OperationResult CanInteract(InteractionContext context) =>
             context.interactable.CanBeInteractedWith(context);
-        
+
+#if UNITY_EDITOR
+        [ContextMenu("Interact with all objects")] private void InteractWithAllObjectEditorFunc() => InteractAll();
+#endif
+
         /// <summary>
         ///     Interacts with all detected objects.
         /// </summary>
         /// <returns>Number of interactions performed</returns>
-        [ContextMenu("Interact with all objects")]
-        public int InteractAll()
+        public OperationResult<int> InteractAll()
         {
             int nInteractionsPerformed = 0;
-            
+
             // Iterate over all detected objects
             for (int nInteractable = 0; nInteractable < DetectedBy.Count; nInteractable++)
             {
                 // Get detector at index
                 ObjectDetectorBase detectorTriggered = DetectedBy[nInteractable];
-                
+
                 // Skip if not interactable
                 if (detectorTriggered is not IInteractableDetector detector) continue;
 
                 if (detector is not Component component) continue;
-                
+
                 // Get interactable object
                 InteractableObjectBase interactableObject = component.GetComponent<InteractableObjectBase>();
-                
+
                 // Handle interaction
                 interactableObject.Interact(this);
                 nInteractionsPerformed++;
             }
-            
-            return nInteractionsPerformed;
+
+            // Return result
+            if (nInteractionsPerformed > 0)
+                return InteractOperations.Interacted().WithData(nInteractionsPerformed);
+
+            return InteractOperations.NoObjectsInRange().WithData(0);
         }
-        
+
+#if UNITY_EDITOR
+        [ContextMenu("Interact with first object")] private void InteractWithFirstObjectEditorFunc() => Interact();
+#endif
+
+
         /// <summary>
         ///     Interacts with first detected object.
         /// </summary>
-        /// <returns>True if interaction was performed, false otherwise</returns>
-        [ContextMenu("Interact with first object")]
-        public bool Interact()
+        public OperationResult Interact()
         {
-            if (DetectedBy.Count == 0) return false; 
+            if (DetectedBy.Count == 0) return InteractOperations.NoObjectsInRange();
 
             // Iterate over all detected objects
             for (int nInteractable = 0; nInteractable < DetectedBy.Count; nInteractable++)
             {
                 // Get detector at index
                 ObjectDetectorBase detectorTriggered = DetectedBy[nInteractable];
-                
+
                 // Skip if not interactable
                 if (detectorTriggered is not IInteractableDetector detector) continue;
-                
+
                 if (detector is not Component component) continue;
-                
+
                 // Get interactable object
                 InteractableObjectBase interactableObject = component.GetComponent<InteractableObjectBase>();
-                
+
                 // Handle interaction
-                interactableObject.Interact(this);
-                return true;
+                return interactableObject.Interact(this);
             }
 
-            return false;
+            return InteractOperations.NoObjectsInRange();
         }
     }
 }
