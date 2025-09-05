@@ -20,7 +20,11 @@ namespace Systems.SimpleInteract.Components
             context.interactable.CanBeInteractedWith(context);
 
 #if UNITY_EDITOR
-        [ContextMenu("Interact with all objects")] private void InteractWithAllObjectEditorFunc() => InteractAll();
+        [ContextMenu("Interact with all objects")] private void InteractWithAllObjectEditorFunc()
+        {
+            if (OperationResult.AreSimilar(InteractAll(), InteractOperations.NoObjectsInRange()))
+                Debug.LogError("Interact failed: No objects in range");
+        }
 #endif
 
         /// <summary>
@@ -58,7 +62,11 @@ namespace Systems.SimpleInteract.Components
         }
 
 #if UNITY_EDITOR
-        [ContextMenu("Interact with first object")] private void InteractWithFirstObjectEditorFunc() => Interact();
+        [ContextMenu("Interact with first object")] private void InteractWithFirstObjectEditorFunc()
+        {
+            if (OperationResult.AreSimilar(Interact(), InteractOperations.NoObjectsInRange()))
+                Debug.LogError("Interact failed: No objects in range");
+        }
 #endif
 
 
