@@ -8,5 +8,8 @@ namespace Systems.SimpleInteract.Operations
 
         public static OperationResult Permitted()
             => OperationResult.Success(SYSTEM_INTERACTION, OperationResult.SUCCESS_PERMITTED);
+        
+        public static OperationResult Denied()
+            => OperationResult.Error(SYSTEM_INTERACTION, OperationResult.ERROR_DENIED);
     }
 }

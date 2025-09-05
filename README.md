@@ -4,6 +4,7 @@
 </div>
 
 # About
+
 SimpleInteract is a subsystem of Simple Kit that creates interaction capabilities.
 
 *For requirements check .asmdef*
@@ -13,13 +14,14 @@ SimpleInteract is a subsystem of Simple Kit that creates interaction capabilitie
 ## Creating an interactable object
 
 To create an interactable object you need to create a custom object class that inherits from
-`InteractableObjectBase<TInteractor>`.
-
-TInteractor should be a class that inherits from `DetectableObjectBase` and will be detected by
-interactable object you created.
+`InteractableObjectBase`.
 
 There are a few methods that will help you to handle interaction logic:
 
+* `CanBeDetected(context)` - This method is called when the object is detected to check if object can be detected,
+  recommended to implement. Zone enter/exit base on this check.
+* `CanBeInteractedWith(context)` - This method is called to check if object can be interacted with, recommended to
+  implement. Interaction base on this check.
 * `OnInteract(context)` - This method is called when the object is interacted with, must be implemented.
 * `OnInteractFailed(context)` - This method is called when the object cannot be interacted with, recommended to
   implement.
@@ -27,9 +29,9 @@ There are a few methods that will help you to handle interaction logic:
 * `OnInteractionZoneExit()` - This method is called when the object exits the interaction zone, recommended for UI.
 
 ```csharp
-    public sealed class ExampleInteractableObject : InteractableObjectBase<ExamplePlayerFlagObject>
+    public sealed class ExampleInteractableObject : InteractableObjectBase
     {
-        protected override void OnInteract(InteractionContext<ExamplePlayerFlagObject> context)
+        protected override void OnInteract(InteractionContext context)
         {
             Debug.Log("Interacted with player flag object");
         } 
@@ -41,7 +43,7 @@ to provide interaction zone.
 
 ## Creating an interactable player
 
-You simply need to create a custom class that inherits from `InteractorBase<TSelf>`. It is heavily recommended
+You simply need to create a custom class that inherits from `InteractorBase`. It is heavily recommended
 to have custom class for interactable detection and other detection logic to prevent further issues with handling things
 such as player invisibility states which may require you to implement `ISupportGhostDetection` on your custom
 interactable object abstraction layer.
@@ -49,7 +51,7 @@ interactable object abstraction layer.
 Of course, you can also add custom detection events to this class.
 
 ```csharp
-    public sealed class ExamplePlayerFlagObject : DetectableObjectBase<ExamplePlayerFlagObject>
+    public sealed class ExamplePlayerFlagObject : DetectableObjectBase
     {
     }
 ```
