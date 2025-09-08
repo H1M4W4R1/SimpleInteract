@@ -22,7 +22,7 @@ namespace Systems.SimpleInteract.Components
 #if UNITY_EDITOR
         [ContextMenu("Interact with all objects")] private void InteractWithAllObjectEditorFunc()
         {
-            if (OperationResult.AreSimilar(InteractAll(), InteractOperations.NoObjectsInRange()))
+            if (OperationResult.AreSimilar(InteractAll(out _), InteractOperations.NoObjectsInRange()))
                 Debug.LogError("Interact failed: No objects in range");
         }
 #endif
@@ -31,9 +31,9 @@ namespace Systems.SimpleInteract.Components
         ///     Interacts with all detected objects.
         /// </summary>
         /// <returns>Number of interactions performed</returns>
-        public OperationResult<int> InteractAll()
+        public OperationResult InteractAll(out int nInteractionsPerformed)
         {
-            int nInteractionsPerformed = 0;
+            nInteractionsPerformed = 0;
 
             // Iterate over all detected objects
             for (int nInteractable = 0; nInteractable < DetectedBy.Count; nInteractable++)
@@ -55,10 +55,9 @@ namespace Systems.SimpleInteract.Components
             }
 
             // Return result
-            if (nInteractionsPerformed > 0)
-                return InteractOperations.Interacted().WithData(nInteractionsPerformed);
+            if (nInteractionsPerformed > 0) return InteractOperations.Interacted();
 
-            return InteractOperations.NoObjectsInRange().WithData(0);
+            return InteractOperations.NoObjectsInRange();
         }
 
 #if UNITY_EDITOR
